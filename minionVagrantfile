@@ -11,25 +11,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "hashicorp/precise64"
-  config.vm.hostname = "saltmaster"
-  config.vm.provision :shell, path: "vagrantbootstrap.sh"
-  config.vm.network :private_network, ip: "192.168.0.10"
-  config.vm.synced_folder 'salt/roots/', '/srv/'
-
-  config.vm.provision  :salt do |salt|
-  	salt.no_minion = true
-	salt.install_master = true
+  config.vm.hostname = "hostname"
+  config.vm.network :forwarded_port, host: 8888, guest:80
+  config.vm.network :private_network, ip: "192.168.0.8" 
+  config.ssh.forward_agent = true
+  config.vm.provision :salt do |salt|
 	salt.run_highstate = true
-#	salt.master_key = 'saltkeys/master.pem'
-#	salt.master_pub = 'saltkeys/master.pub'
-
-	salt.seed_master = {
-#		'minion' => 'saltkeys/minion.pub',
-	}
+	salt.minion_config = 'salt/hostname.conf'
+	salt.minion_key = 'saltkeys/hostname.pem'
+	salt.minion_pub = 'saltkeys/hostname.pub'
+	salt.verbose = true
   end
 
-
-
+  #config.vm.provision :shell, path: "vagrantbootstrap.sh"
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"
@@ -50,7 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
-  config.ssh.forward_agent = true
+  # config.ssh.forward_agent = true
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
