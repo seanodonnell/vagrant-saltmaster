@@ -1,3 +1,7 @@
+Vagrantfile for running a basic salt master for development, plus instructions for connecting a vagrant minion
+
+INSTRUCTIONS FOR USE:
+
 Run vagrant up to start the salt master
 connect to it with vagrant ssh
 generate your master keys with:
